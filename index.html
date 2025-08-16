@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WebFlix • Web Studio</title>
+
+  <!-- Meta / SEO -->
+  <meta name="description" content="WebFlix builds high-performance websites with a premium look. Explore packages, portfolio, and contact to start your project." />
+  <meta property="og:title" content="WebFlix • Web Studio" />
+  <meta property="og:description" content="Premium, conversion-focused web design & development." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://picsum.photos/seed/webhero/1200/630" />
+  <meta name="theme-color" content="#000000" id="metaThemeColor" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui'] },
+          boxShadow: { 'elev': '0 10px 30px -10px rgba(0,0,0,.2)' }
+        }
+      }
+    };
+  </script>
+  <style>
+    :root{
+      --brand:#000000;
+      --mx: 50vw; /* spotlight x */
+      --my: 30vh; /* spotlight y */
+    }
+    .btn{border-radius:12px;padding:.75rem 1.25rem;font-weight:600}
+    .btn-primary{background:var(--brand);color:#fff}
+    .btn-ghost{border:1px solid rgba(0,0,0,.15)}
+    .btn-invert{background:#fff;color:var(--brand);border:1px solid var(--brand)}
+    .glass{background:rgba(255,255,255,.7);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.4)}
+    .dark .glass{background:rgba(17,24,39,.6);border-color:rgba(255,255,255,.08)}
+    .card{border-radius:20px}
+    .tilt{transform-style:preserve-3d; perspective:1000px}
+    .modal{display:none}
+    .modal.open{display:block}
+    .tab-active{background:rgba(0,0,0,.06)}
+    .dark .tab-active{background:rgba(255,255,255,.08)}
+    .bg-hero-gradient{
+      position:absolute; inset:0;
+      background:
+        radial-gradient(500px 300px at var(--mx) var(--my), rgba(255,255,255,.10), transparent 60%),
+        linear-gradient(to bottom, rgba(0,0,0,.45), rgba(0,0,0,.25));
+      pointer-events:none;
+    }
+    .dark .bg-hero-gradient{
+      background:
+        radial-gradient(500px 300px at var(--mx) var(--my), rgba(255,255,255,.08), transparent 60%),
+        linear-gradient(to bottom, rgba(0,0,0,.55), rgba(0,0,0,.35));
+    }
+    .hint{font-size:.75rem;opacity:.7}
+    .badge{font-size:.75rem;padding:.2rem .5rem;border-radius:.5rem}
+    .ok{background:#d1fae5;color:#065f46}
+    .warn{background:#fee2e2;color:#991b1b}
+    @media (prefers-reduced-motion:no-preference){
+      .reveal{opacity:0;transform:translateY(16px);transition:all .6s ease}
+      .reveal.show{opacity:1;transform:none}
+      .nav-hide{transform:translateY(-100%);transition:transform .35s ease}
+      .nav-show{transform:translateY(0);}
+    }
+    .carousel-track{display:flex;gap:16px;will-change:transform}
+    .carousel-item{min-width:80%}
+    @media(min-width:768px){.carousel-item{min-width:32%}}
+  </style>
+</head>
+<body class="min-h-screen font-sans text-gray-900 dark:text-gray-100 bg-gradient-to-b from-gray-50 to-white dark:from-gray-950 dark:to-gray-900">
+
+  <!-- NAV -->
+  <header id="navbar" class="sticky top-0 z-50 nav-show backdrop-blur glass border-b">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button id="devHotspot" title="Hold 2s for Dev Console" class="h-8 w-8 rounded-xl" style="background:var(--brand)"></button>
+        <a href="#hero" id="brandName" class="font-semibold">WebFlix • Web Studio</a>
+      </div>
+      <nav class="hidden md:flex items-center gap-4 text-sm">
+        <a href="#work" class="hover:opacity-70">Work</a>
+        <a href="#packages" class="hover:opacity-70">Packages</a>
+        <a href="#about" class="hover:opacity-70">About</a>
+        <a href="#faq" class="hover:opacity-70">FAQ</a>
+        <a href="#contact" class="btn btn-primary">Hire Me</a>
+        <button id="openSettings" class="hidden md:inline-flex btn btn-ghost">⚙️ Settings</button>
+        <button id="themeToggle" class="rounded-full px-3 py-2 border border-gray-300 dark:border-gray-700">🌙</button>
+      </nav>
+      <div class="md:hidden flex items-center gap-2">
+        <button id="openSettingsMobile" class="btn btn-ghost px-3 py-2">⚙️</button>
+        <button id="themeToggleMobile" class="rounded-full px-3 py-2 border border-gray-300 dark:border-gray-700">🌙</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section id="hero" class="relative overflow-hidden">
+    <div id="heroVideoWrap" class="absolute inset-0 -z-10 tilt">
+      <video id="heroVideo" class="w-full h-full object-cover" autoplay muted loop playsinline preload="auto">
+        <!-- Known-good CC0 defaults -->
+        <source id="heroVideoSource" src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4" type="video/mp4">
+        <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+        <source src="https://samplelib.com/lib/preview/mp4/sample-5s.mp4" type="video/mp4">
+      </video>
+      <div class="bg-hero-gradient"></div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-20 md:py-28 flex flex-col items-center text-center">
+      <h1 id="heroHeadline" class="text-4xl md:text-6xl font-extrabold tracking-tight reveal">Websites that Convert &amp; Impress</h1>
+      <p id="heroSub" class="mt-4 text-lg md:text-xl text-white/90 max-w-2xl reveal">From clean starters to full‑scale masterpieces. I build fast, responsive websites that look premium and sell your story.</p>
+      <div class="mt-8 flex flex-wrap gap-3 reveal">
+        <a href="#packages" class="btn btn-primary">View Packages</a>
+        <a href="#work" class="btn btn-invert">See My Work</a>
+      </div>
+
+      <!-- Quick mockups -->
+      <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 w-full reveal">
+        <img id="mock1" src="https://picsum.photos/seed/mock1/800/500" alt="Mockup 1" loading="lazy" class="aspect-[16/10] rounded-2xl border border-gray-200 dark:border-gray-800 shadow-inner object-cover"/>
+        <img id="mock2" src="https://picsum.photos/seed/mock2/800/500" alt="Mockup 2" loading="lazy" class="aspect-[16/10] rounded-2xl border border-gray-200 dark:border-gray-800 shadow-inner object-cover"/>
+        <img id="mock3" src="https://picsum.photos/seed/mock3/800/500" alt="Mockup 3" loading="lazy" class="aspect-[16/10] rounded-2xl border border-gray-200 dark:border-gray-800 shadow-inner object-cover"/>
+        <img id="mock4" src="https://picsum.photos/seed/mock4/800/500" alt="Mockup 4" loading="lazy" class="aspect-[16/10] rounded-2xl border border-gray-200 dark:border-gray-800 shadow-inner object-cover"/>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOWCASE -->
+  <section id="showcase" class="py-12 border-t border-gray-100 dark:border-gray-800 bg-white/80 dark:bg-gray-900/40">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-2xl font-semibold">Featured Builds</h2>
+        <a href="#work" class="text-sm underline">View all →</a>
+      </div>
+      <div class="grid grid-flow-col auto-cols-[75%] md:auto-cols-[33%] gap-4 overflow-x-auto pb-2 reveal">
+        <img id="showEcom" src="https://picsum.photos/seed/ecom/1200/675" alt="E‑commerce sample" loading="lazy" class="rounded-2xl border border-gray-200 dark:border-gray-800 object-cover aspect-[16/9]"/>
+        <img id="showPort" src="https://picsum.photos/seed/portfolio/1200/675" alt="Portfolio sample" loading="lazy" class="rounded-2xl border border-gray-200 dark:border-gray-800 object-cover aspect-[16/9]"/>
+        <img id="showLand" src="https://picsum.photos/seed/landing/1200/675" alt="Landing page sample" loading="lazy" class="rounded-2xl border border-gray-200 dark:border-gray-800 object-cover aspect-[16/9]"/>
+        <img id="showSaaS" src="https://picsum.photos/seed/saas/1200/675" alt="SaaS sample" loading="lazy" class="rounded-2xl border border-gray-200 dark:border-gray-800 object-cover aspect-[16/9]"/>
+      </div>
+    </div>
+  </section>
+
+  <!-- PACKAGES -->
+  <section id="packages" class="py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl md:text-4xl font-bold text-center reveal">Packages</h2>
+      <p class="text-center text-gray-600 dark:text-gray-300 mt-2 reveal">Pick the build that fits—upgrade anytime.</p>
+
+      <div class="mt-6 flex justify-center gap-2 reveal">
+        <button data-tier="Pixel" class="tier-pill btn btn-ghost">Pixel</button>
+        <button data-tier="Canvas" class="tier-pill btn btn-ghost">Canvas</button>
+        <button data-tier="Masterpiece" class="tier-pill btn btn-primary">Masterpiece</button>
+      </div>
+
+      <div class="mt-8 grid lg:grid-cols-2 gap-6 items-start reveal">
+        <div class="card border border-gray-200 dark:border-gray-800 p-6 bg-white dark:bg-gray-900 shadow-elev">
+          <div class="flex items-center justify-between">
+            <div>
+              <h3 id="previewTitle" class="text-2xl font-semibold">Masterpiece</h3>
+              <p id="previewDesc" class="text-gray-600 dark:text-gray-300 mt-1">Premium build with advanced features and polish.</p>
+            </div>
+            <div class="text-3xl font-bold">£<span id="previewPrice">799</span></div>
+          </div>
+          <ul id="previewList" class="mt-4 space-y-2 text-sm">
+            <li>Up to 10 pages</li>
+            <li>E‑commerce ready</li>
+            <li>Advanced SEO setup</li>
+            <li>Performance audit</li>
+            <li>30‑day support</li>
+          </ul>
+          <div class="mt-6 flex gap-3">
+            <a href="#contact" class="btn btn-primary">Get Started</a>
+            <a href="#work" class="btn btn-ghost">See Examples</a>
+          </div>
+        </div>
+
+        <div class="card overflow-hidden border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-elev">
+          <img id="previewImg" src="https://picsum.photos/seed/masterpiece/1200/800" class="w-full object-cover" alt="Package preview">
+        </div>
+      </div>
+
+      <div class="mt-10 grid md:grid-cols-3 gap-6">
+        <div class="card border border-gray-200 dark:border-gray-800 shadow-elev p-6 bg-white dark:bg-gray-900 reveal">
+          <h3 class="text-2xl font-semibold">Pixel</h3>
+          <p class="text-gray-600 dark:text-gray-300 mt-1">Clean, single‑page starter to get you live fast.</p>
+          <div class="mt-4 text-3xl font-bold">From £<span id="pricePixel">149</span></div>
+          <ul class="mt-4 space-y-2">
+            <li>1 page design</li><li>Responsive layout</li><li>Contact form</li><li>Basic SEO</li><li>1 revision</li>
+          </ul>
+          <a href="#contact" class="mt-6 inline-flex btn btn-primary">Get Started</a>
+        </div>
+        <div class="relative card border border-[var(--brand)] shadow-elev p-6 bg-white dark:bg-gray-900 reveal">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 text-xs" style="background:var(--brand);color:#fff;padding:.25rem .5rem;border-radius:9999px;box-shadow:0 6px 18px -6px rgba(0,0,0,.3)">Most Popular</div>
+          <h3 class="text-2xl font-semibold">Canvas</h3>
+          <p class="text-gray-600 dark:text-gray-300 mt-1">Multi‑page site with custom styling and features.</p>
+          <div class="mt-4 text-3xl font-bold">From £<span id="priceCanvas">399</span></div>
+          <ul class="mt-4 space-y-2">
+            <li>Up to 5 pages</li><li>Custom components</li><li>Speed optimisation</li><li>Basic analytics</li><li>2 revisions</li>
+          </ul>
+          <a href="#contact" class="mt-6 inline-flex btn btn-primary">Get Started</a>
+        </div>
+        <div class="card border border-gray-200 dark:border-gray-800 shadow-elev p-6 bg-white dark:bg-gray-900 reveal">
+          <h3 class="text-2xl font-semibold">Masterpiece</h3>
+          <p class="text-gray-600 dark:text-gray-300 mt-1">Premium build with advanced features and polish.</p>
+          <div class="mt-4 text-3xl font-bold">From £<span id="priceMasterpiece">799</span></div>
+          <ul class="mt-4 space-y-2">
+            <li>Up to 10 pages</li><li>E‑commerce ready</li><li>Advanced SEO setup</li><li>Performance audit</li><li>30‑day support</li>
+          </ul>
+          <a href="#contact" class="mt-6 inline-flex btn btn-primary">Get Started</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="py-20 border-y border-gray-100 dark:border-gray-800">
+    <div class="max-w-7xl mx-auto px-4 grid md:grid-cols-2 gap-10 items-center">
+      <div class="reveal">
+        <h2 class="text-3xl font-bold">Your brand deserves more than a template</h2>
+        <p id="aboutText" class="mt-4 text-gray-600 dark:text-gray-300">I design and build conversion‑ready sites with clean code, fast load times, and a premium look. Each project starts with your goals and ends with measurable results.</p>
+        <div class="mt-6 flex gap-3">
+          <a href="#work" class="btn btn-primary">See My Work</a>
+          <a href="#contact" class="btn btn-ghost">Start a Project</a>
+        </div>
+        <div class="mt-8 grid grid-cols-3 gap-4 text-center">
+          <div class="p-4 rounded-xl glass"><div class="text-2xl font-bold">20+</div><div class="text-xs opacity-70">Sites Built</div></div>
+          <div class="p-4 rounded-xl glass"><div class="text-2xl font-bold">5⭐</div><div class="text-xs opacity-70">Client Rating</div></div>
+          <div class="p-4 rounded-xl glass"><div class="text-2xl font-bold">48h</div><div class="text-xs opacity-70">Fast Start</div></div>
+        </div>
+      </div>
+      <div class="aspect-[4/3] rounded-3xl overflow-hidden border border-gray-100 dark:border-gray-700 shadow-elev reveal">
+        <img id="aboutImg" src="https://picsum.photos/seed/webteam/1200/900" alt="Studio at work" loading="lazy" class="w-full h-full object-cover"/>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section id="work" class="py-20">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center reveal">Selected Work</h2>
+      <p class="text-center text-gray-600 dark:text-gray-300 mt-2 reveal">Slide through — autoplay, swipe, drag.</p>
+
+      <div class="mt-10 overflow-hidden reveal">
+        <div class="carousel-track" id="workTrack">
+          <!-- 6 sample projects -->
+          <article class="carousel-item card border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
+            <img id="proj1" src="https://picsum.photos/seed/proj1/1200/750" alt="Project 1" class="w-full h-auto object-cover"/>
+            <div class="p-4"><div class="font-medium">Project 1</div><div class="text-sm opacity-80">E‑commerce storefront redesign.</div></div>
+          </article>
+          <article class="carousel-item card border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
+            <img id="proj2" src="https://picsum.photos/seed/proj2/1200/750" alt="Project 2" class="w-full h-auto object-cover"/>
+            <div class="p-4"><div class="font-medium">Project 2</div><div class="text-sm opacity-80">Portfolio for a creative agency.</div></div>
+          </article>
+          <article class="carousel-item card border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
+            <img id="proj3" src="https://picsum.photos/seed/proj3/1200/750" alt="Project 3" class="w-full h-auto object-cover"/>
+            <div class="p-4"><div class="font-medium">Project 3</div><div class="text-sm opacity-80">SaaS landing page with blog.</div></div>
+          </article>
+          <article class="carousel-item card border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
+            <img id="proj4" src="https://picsum.photos/seed/proj4/1200/750" alt="Project 4" class="w-full h-auto object-cover"/>
+            <div class="p-4"><div class="font-medium">Project 4</div><div class="text-sm opacity-80">Booking site with calendar.</div></div>
+          </article>
+          <article class="carousel-item card border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
+            <img id="proj5" src="https://picsum.photos/seed/proj5/1200/750" alt="Project 5" class="w-full h-auto object-cover"/>
+            <div class="p-4"><div class="font-medium">Project 5</div><div class="text-sm opacity-80">Restaurant menu & ordering.</div></div>
+          </article>
+          <article class="carousel-item card border border-gray-200 dark:border-gray-800 overflow-hidden bg-white dark:bg-gray-900">
+            <img id="proj6" src="https://picsum.photos/seed/proj6/1200/750" alt="Project 6" class="w-full h-auto object-cover"/>
+            <div class="p-4"><div class="font-medium">Project 6</div><div class="text-sm opacity-80">Personal blog & newsletter.</div></div>
+          </article>
+        </div>
+        <div class="mt-4 flex items-center justify-center gap-3">
+          <button id="workPrev" class="btn btn-ghost">←</button>
+          <button id="workNext" class="btn btn-ghost">→</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" class="py-20">
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center reveal">FAQ</h2>
+      <div class="mt-8 divide-y divide-gray-200 dark:divide-gray-800 border-y border-gray-200 dark:border-gray-800 reveal">
+        <details class="py-4 group">
+          <summary class="cursor-pointer font-medium list-none flex items-center justify-between">How fast can we start? <span class="text-xl">+</span></summary>
+          <p class="mt-2 opacity-80">I can usually begin within 48 hours after we align on scope and content.</p>
+        </details>
+        <details class="py-4 group">
+          <summary class="cursor-pointer font-medium list-none flex items-center justify-between">What do you need from me? <span class="text-xl">+</span></summary>
+          <p class="mt-2 opacity-80">Brand assets (logo, colors), copy, and any references you love. I can help refine all of these.</p>
+        </details>
+        <details class="py-4 group">
+          <summary class="cursor-pointer font-medium list-none flex items-center justify-between">Do you provide hosting/domain? <span class="text-xl">+</span></summary>
+          <p class="mt-2 opacity-80">I can set everything up for you or work with your existing provider—whatever's easier.</p>
+        </details>
+        <details class="py-4 group">
+          <summary class="cursor-pointer font-medium list-none flex items-center justify-between">Can I upgrade later? <span class="text-xl">+</span></summary>
+          <p class="mt-2 opacity-80">Yes—start with Pixel and upgrade to Canvas or Masterpiece anytime.</p>
+        </details>
+        <details class="py-4 group">
+          <summary class="cursor-pointer font-medium list-none flex items-center justify-between">What about revisions? <span class="text-xl">+</span></summary>
+          <p class="mt-2 opacity-80">Each package includes revisions (see comparison). Additional tweaks are easy to add.</p>
+        </details>
+      </div>
+      <div class="text-center mt-8">
+        <a href="#packages" class="btn btn-primary">Compare Packages</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section id="contact" class="py-20 border-y border-gray-100 dark:border-gray-800">
+    <div class="max-w-3xl mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center reveal">Let’s Build Your Site</h2>
+      <p class="text-center opacity-80 mt-2 reveal">Send project details and I’ll reply within 24 hours.</p>
+      <form class="mt-8 grid gap-4 reveal" onsubmit="event.preventDefault(); alert('Connect this to your Fiverr inbox or form handler when you go live.');">
+        <input class="rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3" placeholder="Your name" required />
+        <input type="email" class="rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3" placeholder="Email" required />
+        <textarea rows="5" class="rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3" placeholder="Tell me about your project" required></textarea>
+        <div class="flex flex-wrap gap-3">
+          <a href="#packages" class="btn btn-ghost">View Packages</a>
+          <button type="submit" class="btn btn-primary">Send Inquiry</button>
+        </div>
+        <p class="text-xs opacity-60">Tip: Replace the alert() above with your Fiverr inbox link or form endpoint.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="py-10 text-sm">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="opacity-80">© <span id="year"></span> <span id="footerBrand">WebFlix</span> Studio</div>
+      <div class="flex gap-4 opacity-80">
+        <a href="#hero" class="hover:underline">Home</a>
+        <a href="#work" class="hover:underline">Work</a>
+        <a href="#packages" class="hover:underline">Packages</a>
+        <a href="#contact" class="hover:underline">Contact</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MOBILE HIRE BAR -->
+  <div id="mobileHire" class="fixed inset-x-0 bottom-0 z-50 md:hidden transition translate-y-0">
+    <div class="m-3 rounded-2xl glass shadow-elev p-3 flex items-center justify-between">
+      <div class="text-sm">
+        <div class="font-semibold">Ready to start?</div>
+        <div class="opacity-80">Pick a package or message me</div>
+      </div>
+      <a href="#contact" class="btn btn-primary">Hire Me</a>
+    </div>
+  </div>
+
+  <!-- SETTINGS (Public) -->
+  <div id="settingsModal" class="modal fixed inset-0 z-[60]">
+    <div class="absolute inset-0 bg-black/40" aria-hidden="true"></div>
+    <div class="relative mx-auto mt-16 w-[92%] max-w-3xl glass p-6 card shadow-elev">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xl font-bold">Site Settings</h3>
+        <button id="closeSettings" class="text-2xl leading-none">×</button>
+      </div>
+      <p class="text-sm opacity-80 mt-1">Customize WebFlix without code. Changes save in your browser.</p>
+
+      <div class="mt-4 grid grid-cols-1 gap-4">
+        <div class="grid md:grid-cols-2 gap-3">
+          <label class="text-sm">Brand Name
+            <input id="setBrand" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2" placeholder="WebFlix • Web Studio">
+          </label>
+          <label class="text-sm">Primary Color
+            <input id="setColor" type="color" value="#000000" class="w-full mt-1 h-10 rounded-xl border border-gray-300 dark:border-gray-700 p-1">
+          </label>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3">
+          <label class="text-sm">Hero Headline
+            <input id="setHeadline" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2" placeholder="Websites that Convert & Impress">
+          </label>
+          <label class="text-sm">Hero Subheading
+            <input id="setSub" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2" placeholder="From clean starters to full‑scale masterpieces...">
+          </label>
+        </div>
+        <div class="grid md:grid-cols-3 gap-3">
+          <label class="text-sm">Pixel (£)<input id="setPricePixel" type="number" min="0" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2" placeholder="149"></label>
+          <label class="text-sm">Canvas (£)<input id="setPriceCanvas" type="number" min="0" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2" placeholder="399"></label>
+          <label class="text-sm">Masterpiece (£)<input id="setPriceMasterpiece" type="number" min="0" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2" placeholder="799"></label>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3">
+          <label class="text-sm">Hero Video URL
+            <input id="setVideo" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2" placeholder="https://...mp4 or Pexels/Pixabay/Coverr page">
+          </label>
+          <label class="text-sm flex items-center gap-2 mt-6 md:mt-[30px]">
+            <input type="checkbox" id="toggleVideo" checked /> Enable Video Background
+          </label>
+        </div>
+        <div class="flex items-center justify-between mt-2">
+          <div class="flex gap-2">
+            <button id="saveSettings" class="btn btn-primary">Save</button>
+            <button id="resetSettings" class="btn btn-ghost">Reset</button>
+          </div>
+          <label class="text-sm flex items-center gap-2">
+            <input type="checkbox" id="prefersDark" /> Default to Dark Mode
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DEVELOPER CONSOLE -->
+  <div id="devModal" class="modal fixed inset-0 z-[70]">
+    <div class="absolute inset-0 bg-black/50" aria-hidden="true"></div>
+    <div class="relative mx-auto mt-12 w-[96%] max-w-4xl glass p-0 card shadow-elev">
+      <!-- Header -->
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/30 dark:border-white/10">
+        <div class="flex items-center gap-3">
+          <div class="h-8 w-8 rounded-xl" style="background:var(--brand)"></div>
+          <h3 class="text-lg font-bold">Developer Console</h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="exportSettings" class="btn btn-ghost text-sm">Export JSON</button>
+          <label class="btn btn-ghost text-sm cursor-pointer">Import JSON <input id="importSettings" type="file" accept="application/json" class="hidden"></label>
+          <button id="closeDev" class="text-2xl leading-none">×</button>
+        </div>
+      </div>
+      <!-- Body -->
+      <div class="p-6">
+        <div id="devGate" class="mb-6">
+          <p class="text-sm opacity-80 mb-2">Set a PIN to protect this console (stored locally). Leave blank to keep current. Default PIN: 0000</p>
+          <div class="flex gap-2 items-center">
+            <input id="devPin" type="password" placeholder="New PIN" class="rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+            <input id="devPinConfirm" type="password" placeholder="Confirm PIN" class="rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+            <button id="savePin" class="btn btn-primary">Save PIN</button>
+            <button id="lockDev" class="btn btn-ghost">Lock</button>
+          </div>
+          <p id="devMsg" class="text-xs mt-2 opacity-70"></p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="flex gap-2 mb-4 text-sm">
+          <button class="tab btn btn-ghost tab-active" data-tab="general">General</button>
+          <button class="tab btn btn-ghost" data-tab="images">Images</button>
+          <button class="tab btn btn-ghost" data-tab="advanced">Advanced</button>
+        </div>
+
+        <!-- GENERAL TAB -->
+        <div id="tab-general" class="tab-panel">
+          <div class="grid md:grid-cols-2 gap-4">
+            <label class="text-sm">Brand Name <input id="devBrand" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2"></label>
+            <label class="text-sm">Primary Color <input id="devColor" type="color" class="w-full mt-1 h-10 rounded-xl border border-gray-300 dark:border-gray-700 p-1"></label>
+            <label class="text-sm">Hero Headline <input id="devHeadline" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2"></label>
+            <label class="text-sm">Hero Subheading <input id="devSub" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2"></label>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-4 mt-4">
+            <label class="text-sm">Pixel (£)<input id="devPricePixel" type="number" min="0" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2"></label>
+            <label class="text-sm">Canvas (£)<input id="devPriceCanvas" type="number" min="0" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2"></label>
+            <label class="text-sm">Masterpiece (£)<input id="devPriceMasterpiece" type="number" min="0" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2"></label>
+          </div>
+
+          <!-- SMART VIDEO HELPER -->
+          <div class="mt-6 glass p-4 rounded-2xl">
+            <div class="font-semibold mb-1">Smart Video Helper</div>
+            <p class="hint mb-2">Paste any link (Pexels / Pixabay / Coverr page OR direct .mp4). I’ll auto-convert Pexels, test playability, and apply with cache‑busting.</p>
+            <div class="grid md:grid-cols-[1fr_auto_auto] gap-2">
+              <input id="devVideoSmart" placeholder="https://www.pexels.com/video/abstract-...  or  https://.../video.mp4" class="rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+              <button id="devVideoTest" class="btn btn-ghost">Test</button>
+              <button id="devVideoApply" class="btn btn-primary">Apply</button>
+            </div>
+            <div id="devVideoStatus" class="hint mt-2"></div>
+
+            <details class="mt-3">
+              <summary class="cursor-pointer text-sm">Pick from Library</summary>
+              <div class="mt-2 grid md:grid-cols-2 gap-2">
+                <button class="btn btn-ghost libVideo" data-url="https://cdn.coverr.co/videos/coverr-ocean-waves-1585238388357?token=public">Ocean Waves (Coverr)</button>
+                <button class="btn btn-ghost libVideo" data-url="https://www.w3schools.com/html/mov_bbb.mp4">Big Buck Bunny (test)</button>
+                <button class="btn btn-ghost libVideo" data-url="https://samplelib.com/lib/preview/mp4/sample-5s.mp4">Sample 5s (test)</button>
+                <button class="btn btn-ghost libVideo" data-url="https://cdn.coverr.co/videos/coverr-blue-purple-particles-0948/1080p.mp4">Particles (Coverr)</button>
+              </div>
+            </details>
+
+            <div class="grid md:grid-cols-2 gap-2 mt-3">
+              <label class="text-sm">Hero Video URL (direct or page)
+                <input id="devVideo" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2" placeholder="https://...mp4">
+              </label>
+              <label class="text-sm">Enable Video Background
+                <select id="devVideoToggle" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                  <option value="on" selected>On</option>
+                  <option value="off">Off</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="mt-2">
+              <button id="devSaveGeneral" class="btn btn-primary">Save General</button>
+              <span class="hint ml-2">Saves brand, copy, prices + video settings.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- IMAGES TAB -->
+        <div id="tab-images" class="tab-panel hidden">
+          <p class="hint mb-3">Swap any image by URL. Click “Validate” to confirm it loads before saving.</p>
+          <div class="grid md:grid-cols-2 gap-4">
+            <!-- Hero & About -->
+            <label class="text-sm">Hero Image URL
+              <div class="flex gap-2 mt-1">
+                <input id="imgHero" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgHero">Validate</button>
+              </div>
+            </label>
+            <label class="text-sm">About Image URL
+              <div class="flex gap-2 mt-1">
+                <input id="imgAbout" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgAbout">Validate</button>
+              </div>
+            </label>
+            <!-- Mockups -->
+            <label class="text-sm">Mockup 1
+              <div class="flex gap-2 mt-1">
+                <input id="imgMock1" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgMock1">Validate</button>
+              </div>
+            </label>
+            <label class="text-sm">Mockup 2
+              <div class="flex gap-2 mt-1">
+                <input id="imgMock2" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgMock2">Validate</button>
+              </div>
+            </label>
+            <label class="text-sm">Mockup 3
+              <div class="flex gap-2 mt-1">
+                <input id="imgMock3" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgMock3">Validate</button>
+              </div>
+            </label>
+            <label class="text-sm">Mockup 4
+              <div class="flex gap-2 mt-1">
+                <input id="imgMock4" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgMock4">Validate</button>
+              </div>
+            </label>
+            <!-- Showcase -->
+            <label class="text-sm">Showcase: E‑commerce
+              <div class="flex gap-2 mt-1">
+                <input id="imgShowEcom" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgShowEcom">Validate</button>
+              </div>
+            </label>
+            <label class="text-sm">Showcase: Portfolio
+              <div class="flex gap-2 mt-1">
+                <input id="imgShowPort" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgShowPort">Validate</button>
+              </div>
+            </label>
+            <label class="text-sm">Showcase: Landing
+              <div class="flex gap-2 mt-1">
+                <input id="imgShowLand" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgShowLand">Validate</button>
+              </div>
+            </label>
+            <label class="text-sm">Showcase: SaaS
+              <div class="flex gap-2 mt-1">
+                <input id="imgShowSaaS" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgShowSaaS">Validate</button>
+              </div>
+            </label>
+            <!-- Projects -->
+            <label class="text-sm">Project 1
+              <div class="flex gap-2 mt-1">
+                <input id="imgProj1" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgProj1">Validate</button>
+              </div>
+            </label>
+            <label class="text-sm">Project 2
+              <div class="flex gap-2 mt-1">
+                <input id="imgProj2" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgProj2">Validate</button>
+              </div>
+            </label>
+            <label class="text-sm">Project 3
+              <div class="flex gap-2 mt-1">
+                <input id="imgProj3" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgProj3">Validate</button>
+              </div>
+            </label>
+            <label class="text-sm">Project 4
+              <div class="flex gap-2 mt-1">
+                <input id="imgProj4" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgProj4">Validate</button>
+              </div>
+            </label>
+            <label class="text-sm">Project 5
+              <div class="flex gap-2 mt-1">
+                <input id="imgProj5" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgProj5">Validate</button>
+              </div>
+            </label>
+            <label class="text-sm">Project 6
+              <div class="flex gap-2 mt-1">
+                <input id="imgProj6" class="flex-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <button class="btn btn-ghost imgTest" data-target="imgProj6">Validate</button>
+              </div>
+            </label>
+          </div>
+
+          <div class="mt-4 flex items-center gap-2">
+            <button id="saveImages" class="btn btn-primary">Save Images</button>
+            <button id="resetImages" class="btn btn-ghost">Reset to Defaults</button>
+          </div>
+        </div>
+
+        <!-- ADVANCED TAB -->
+        <div id="tab-advanced" class="tab-panel hidden">
+          <div class="grid md:grid-cols-2 gap-4">
+            <label class="text-sm">Fiverr Inbox Link
+              <input id="devFiverr" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2" placeholder="https://www.fiverr.com/inbox/yourname">
+            </label>
+            <label class="text-sm">Sticky CTA (Desktop)
+              <select id="devSticky" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <option value="on" selected>On</option><option value="off">Off</option>
+              </select>
+            </label>
+            <label class="text-sm">Enable Parallax
+              <select id="devParallax" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <option value="on" selected>On</option><option value="off">Off</option>
+              </select>
+            </label>
+            <label class="text-sm">Reveal Animations
+              <select id="devReveal" class="w-full mt-1 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 px-3 py-2">
+                <option value="on" selected>On</option><option value="off">Off</option>
+              </select>
+            </label>
+          </div>
+          <div class="mt-4 flex items-center gap-2">
+            <button id="saveAdvanced" class="btn btn-primary">Save Advanced</button>
+            <span class="hint">Great for quick experiments without code.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DESKTOP CTA -->
+  <div id="desktopCTA" class="hidden md:flex fixed right-4 bottom-6 z-40">
+    <a href="#contact" class="btn btn-primary shadow-elev">Start Your Project</a>
+  </div>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const html = document.documentElement;
+    const metaTheme = $("metaThemeColor");
+    $("year").textContent = new Date().getFullYear();
+
+    // Theme
+    const themeButtons = [$("themeToggle"), $("themeToggleMobile")];
+    const setThemeLabel = ()=>{
+      const dark = html.classList.contains("dark");
+      themeButtons.forEach(b=> b && (b.textContent = dark ? "☀️" : "🌙"));
+      localStorage.setItem("theme", dark ? "dark":"light");
+      const brand = getComputedStyle(document.documentElement).getPropertyValue('--brand').trim() || "#000000";
+      metaTheme.setAttribute("content", dark ? "#0b1220" : brand);
+    };
+    themeButtons.forEach(b => b && b.addEventListener("click", ()=>{ html.classList.toggle("dark"); setThemeLabel(); }));
+    const savedTheme = localStorage.getItem("theme");
+    if(savedTheme==="dark") html.classList.add("dark");
+    setThemeLabel();
+
+    // Navbar hide/show + mobile bar
+    let lastY = window.scrollY;
+    window.addEventListener("scroll", ()=>{
+      const nav = $("navbar");
+      const y = window.scrollY;
+      if(y > lastY && y > 80){ nav.classList.remove("nav-show"); nav.classList.add("nav-hide"); }
+      else { nav.classList.remove("nav-hide"); nav.classList.add("nav-show"); }
+      lastY = y;
+      const mobileBar = $("mobileHire");
+      mobileBar.classList.toggle("translate-y-full", y > 1200);
+      mobileBar.classList.toggle("translate-y-0", y <= 1200);
+    });
+
+    // Reveal animations
+    const io = new IntersectionObserver((entries)=>{
+      entries.forEach(e => { if(e.isIntersecting) e.target.classList.add("show"); });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach(el => io.observe(el));
+
+    // ---- State ----
+    const DEFAULTS = {
+      brand: "WebFlix • Web Studio",
+      color: "#000000",
+      headline: "Websites that Convert & Impress",
+      sub: "From clean starters to full‑scale masterpieces. I build fast, responsive websites that look premium and sell your story.",
+      pricePixel: "149", priceCanvas: "399", priceMasterpiece: "799",
+      heroImg: "https://picsum.photos/seed/webhero/1800/900",
+      heroVideo: "https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+      videoEnabled: true,
+      about: "I design and build conversion‑ready sites with clean code, fast load times, and a premium look. Each project starts with your goals and ends with measurable results.",
+      images: {
+        mock1: "https://picsum.photos/seed/mock1/800/500",
+        mock2: "https://picsum.photos/seed/mock2/800/500",
+        mock3: "https://picsum.photos/seed/mock3/800/500",
+        mock4: "https://picsum.photos/seed/mock4/800/500",
+        showEcom: "https://picsum.photos/seed/ecom/1200/675",
+        showPort: "https://picsum.photos/seed/portfolio/1200/675",
+        showLand: "https://picsum.photos/seed/landing/1200/675",
+        showSaaS: "https://picsum.photos/seed/saas/1200/675",
+        about: "https://picsum.photos/seed/webteam/1200/900",
+        proj1: "https://picsum.photos/seed/proj1/1200/750",
+        proj2: "https://picsum.photos/seed/proj2/1200/750",
+        proj3: "https://picsum.photos/seed/proj3/1200/750",
+        proj4: "https://picsum.photos/seed/proj4/1200/750",
+        proj5: "https://picsum.photos/seed/proj5/1200/750",
+        proj6: "https://picsum.photos/seed/proj6/1200/750"
+      },
+      advanced: { stickyDesktopCTA: true, parallax: true, reveal: true, fiverrLink: "" }
+    };
+    function getState(){ return JSON.parse(localStorage.getItem("webflixState") || "null") || DEFAULTS; }
+    function saveState(s){ localStorage.setItem("webflixState", JSON.stringify(s)); }
+    function cacheBust(url){ if(!url) return url; return url + (url.includes("?") ? "&":"?") + "v=" + Date.now(); }
+
+    function applyState(s){
+      $("brandName").textContent = s.brand;
+      $("footerBrand").textContent = (s.brand.split(" ")[0] || s.brand);
+      document.documentElement.style.setProperty("--brand", s.color || "#000000");
+      $("heroHeadline").textContent = s.headline;
+      $("heroSub").textContent = s.sub;
+      $("pricePixel").textContent = s.pricePixel;
+      $("priceCanvas").textContent = s.priceCanvas;
+      $("priceMasterpiece").textContent = s.priceMasterpiece;
+      $("aboutText").textContent = s.about;
+      $("aboutImg").src = s.images.about;
+
+      const video = $("heroVideo");
+      const source = $("heroVideoSource");
+      $("heroVideoWrap").style.display = s.videoEnabled ? "block":"none";
+      if(s.videoEnabled){
+        source.src = s.heroVideo || DEFAULTS.heroVideo;
+        video.load();
+        const play = video.play(); if(play && play.catch) play.catch(()=>{});
+        const fb = document.getElementById("heroFallback"); if(fb) fb.remove();
+      } else {
+        if(!document.getElementById("heroFallback")){
+          const img = document.createElement("img");
+          img.id = "heroFallback"; img.src = s.heroImg;
+          img.className = "absolute inset-0 w-full h-full object-cover -z-10";
+          $("hero").prepend(img);
+        } else { $("heroFallback").src = s.heroImg; }
+      }
+
+      ["mock1","mock2","mock3","mock4"].forEach((id,i)=> $(id).src = s.images["mock"+(i+1)]);
+      $("showEcom").src = s.images.showEcom; $("showPort").src = s.images.showPort; $("showLand").src = s.images.showLand; $("showSaaS").src = s.images.showSaaS;
+      $("proj1").src = s.images.proj1; $("proj2").src = s.images.proj2; $("proj3").src = s.images.proj3;
+      $("proj4").src = s.images.proj4; $("proj5").src = s.images.proj5; $("proj6").src = s.images.proj6;
+
+      $("desktopCTA").style.display = s.advanced.stickyDesktopCTA ? "flex" : "none";
+    }
+    applyState(getState());
+
+    // Interactive hero tilt + spotlight
+    (function interactiveHero(){
+      const wrap = $("heroVideoWrap"); let raf=null;
+      function onMove(e){
+        const rect = wrap.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        const rx = (0.5 - y) * 6, ry = (x - 0.5) * 8;
+        const tx = (x - 0.5) * 20, ty = (y - 0.5) * 14;
+        if(raf) cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(()=>{
+          wrap.style.transform = `perspective(1000px) rotateX(${rx}deg) rotateY(${ry}deg) translate(${tx}px, ${ty}px) scale(1.02)`;
+          document.documentElement.style.setProperty('--mx', e.clientX + 'px');
+          document.documentElement.style.setProperty('--my', e.clientY + 'px');
+        });
+      }
+      function onLeave(){ wrap.style.transform = "none"; }
+      if(window.matchMedia('(pointer: fine)').matches){
+        window.addEventListener("mousemove", onMove);
+        window.addEventListener("mouseleave", onLeave);
+      }
+    })();
+
+    // Public Settings modal
+    const settingsModal = $("settingsModal");
+    [$("openSettings"), $("openSettingsMobile")].forEach(b=> b && b.addEventListener("click", ()=>{
+      const s = getState();
+      $("setBrand").value = s.brand; $("setColor").value = s.color;
+      $("setHeadline").value = s.headline; $("setSub").value = s.sub;
+      $("setPricePixel").value = s.pricePixel; $("setPriceCanvas").value = s.priceCanvas; $("setPriceMasterpiece").value = s.priceMasterpiece;
+      $("setVideo").value = s.heroVideo || ""; $("toggleVideo").checked = !!s.videoEnabled;
+      $("prefersDark").checked = localStorage.getItem("theme")==="dark";
+      settingsModal.classList.add("open");
+    }));
+    $("closeSettings").addEventListener("click", ()=> settingsModal.classList.remove("open"));
+    $("saveSettings").addEventListener("click", ()=>{
+      const s = getState();
+      s.brand = $("setBrand").value || s.brand; s.color = $("setColor").value || s.color;
+      s.headline = $("setHeadline").value || s.headline; s.sub = $("setSub").value || s.sub;
+      s.pricePixel = $("setPricePixel").value || s.pricePixel; s.priceCanvas = $("setPriceCanvas").value || s.priceCanvas; s.priceMasterpiece = $("setPriceMasterpiece").value || s.priceMasterpiece;
+      let v = $("setVideo").value || s.heroVideo; if(v) v = cacheBust(v);
+      s.heroVideo = v; s.videoEnabled = $("toggleVideo").checked;
+      if($("prefersDark").checked){ html.classList.add("dark"); } else { html.classList.remove("dark"); }
+      setThemeLabel(); saveState(s); applyState(s); settingsModal.classList.remove("open");
+    });
+    $("resetSettings").addEventListener("click", ()=>{ saveState(DEFAULTS); applyState(DEFAULTS); });
+
+    // Dev Console access & PIN
+    const devModal = $("devModal"); let holdTimer;
+    $("devHotspot").addEventListener("mousedown", ()=>{ holdTimer = setTimeout(openDevGate, 2000); });
+    ["mouseup","mouseleave","touchend","touchcancel"].forEach(ev=> $("devHotspot").addEventListener(ev, ()=> clearTimeout(holdTimer)));
+    document.addEventListener("keydown", (e)=>{ if((e.ctrlKey||e.metaKey) && e.altKey && e.key.toLowerCase()==="d"){ openDevGate(); } });
+    function openDevGate(){
+      const pinSet = localStorage.getItem("webflixDevPIN") || "0000";
+      const entry = prompt("Enter Developer PIN:"); if(entry !== pinSet){ alert("Incorrect PIN"); return; }
+      openDev();
+    }
+    function openDev(){ devModal.classList.add("open"); loadDevForms(); }
+    $("closeDev").addEventListener("click", ()=> devModal.classList.remove("open"));
+    $("savePin").addEventListener("click", ()=>{
+      const a=$("devPin").value.trim(), b=$("devPinConfirm").value.trim();
+      if(a && a===b){ localStorage.setItem("webflixDevPIN", a); $("devMsg").textContent="PIN saved."; $("devPin").value=$("devPinConfirm").value=""; }
+      else{ $("devMsg").textContent="PINs do not match."; }
+    });
+    $("lockDev").addEventListener("click", ()=> devModal.classList.remove("open"));
+    document.querySelectorAll(".tab").forEach(btn=>{
+      btn.addEventListener("click", ()=>{
+        document.querySelectorAll(".tab").forEach(b=> b.classList.remove("tab-active"));
+        btn.classList.add("tab-active");
+        const name=btn.dataset.tab;
+        document.querySelectorAll(".tab-panel").forEach(p=> p.classList.add("hidden"));
+        $("tab-"+name).classList.remove("hidden");
+      });
+    });
+
+    function loadDevForms(){
+      const s = getState();
+      $("devBrand").value = s.brand; $("devColor").value = s.color;
+      $("devHeadline").value = s.headline; $("devSub").value = s.sub;
+      $("devPricePixel").value = s.pricePixel; $("devPriceCanvas").value = s.priceCanvas; $("devPriceMasterpiece").value = s.priceMasterpiece;
+      $("devVideo").value = s.heroVideo || ""; $("devVideoToggle").value = s.videoEnabled ? "on" : "off";
+      $("devVideoSmart").value = s.heroVideo || "";
+      // Images
+      $("imgHero").value = s.heroImg; $("imgAbout").value = s.images.about;
+      ["1","2","3","4"].forEach(n=> $("imgMock"+n).value = s.images["mock"+n]);
+      $("imgShowEcom").value = s.images.showEcom; $("imgShowPort").value = s.images.showPort; $("imgShowLand").value = s.images.showLand; $("imgShowSaaS").value = s.images.showSaaS;
+      ["1","2","3","4","5","6"].forEach(n=> $("imgProj"+n).value = s.images["proj"+n]);
+    }
+
+    // Smart Video Helper
+    const status = $("devVideoStatus");
+    function normalizeVideoUrl(u){
+      if(!u) return "";
+      u = u.trim();
+      // Convert Pexels page URL → download endpoint
+      const pex = u.match(/https?:\/\/(?:www\.)?pexels\.com\/video\/[^/]+-(\d+)/i);
+      if(pex){ const id=pex[1]; return `https://www.pexels.com/video/${id}/download?format=mp4`; }
+      // If it's already a Pexels download, keep it
+      if(/pexels\.com\/video\/\d+\/download/i.test(u)) return u;
+      // Pixabay usually needs their CDN link; page URLs won't work directly. If user pastes a cdn.pixabay.com link, allow it:
+      if(/cdn\.pixabay\.com\/.*\.mp4/i.test(u)) return u;
+      // Coverr, W3Schools, direct .mp4 – pass through
+      return u;
+    }
+    function testVideo(url){
+      return new Promise((resolve)=>{
+        const v=document.createElement('video');
+        v.muted=true; v.autoplay=true; v.loop=true; v.playsInline=true; v.preload="auto"; v.src=url;
+        let done=false; const ok=()=>{ if(done) return; done=true; resolve({ok:true}); v.remove(); };
+        const fail=()=>{ if(done) return; done=true; resolve({ok:false}); v.remove(); };
+        v.addEventListener('loadeddata', ok, {once:true});
+        v.addEventListener('error', fail, {once:true});
+        setTimeout(fail, 5000);
+        v.style.display="none"; document.body.appendChild(v);
+      });
+    }
+    $("devVideoTest").addEventListener("click", async ()=>{
+      const raw=$("devVideoSmart").value; const url=normalizeVideoUrl(raw);
+      if(!url){ status.textContent="Paste a link to test."; return; }
+      status.textContent="Testing…";
+      const res=await testVideo(url);
+      status.innerHTML = res.ok ? '<span class="badge ok">Playable</span> Looks good — click Apply.' : '<span class="badge warn">Not playable</span> Try a different link or upload hero.mp4 to your repo.';
+    });
+    $("devVideoApply").addEventListener("click", async ()=>{
+      const s=getState(); let url=normalizeVideoUrl($("devVideoSmart").value);
+      if(!url){ status.textContent="Paste a link first."; return; }
+      url = cacheBust(url);
+      s.heroVideo = url; s.videoEnabled = true;
+      saveState(s); applyState(s);
+      $("devVideo").value = s.heroVideo; $("devVideoToggle").value="on";
+      status.innerHTML = '<span class="badge ok">Applied</span> Reloaded with your video.';
+      window.scrollTo({top:0, behavior:"smooth"});
+    });
+    document.querySelectorAll(".libVideo").forEach(btn=> btn.addEventListener("click", ()=>{
+      $("devVideoSmart").value = btn.dataset.url; status.textContent="Ready — click Test or Apply.";
+    }));
+
+    // Developer "Save General"
+    $("devSaveGeneral").addEventListener("click", ()=>{
+      const s=getState();
+      s.brand = $("devBrand").value || s.brand; s.color = $("devColor").value || s.color;
+      s.headline = $("devHeadline").value || s.headline; s.sub = $("devSub").value || s.sub;
+      s.pricePixel = $("devPricePixel").value || s.pricePixel; s.priceCanvas = $("devPriceCanvas").value || s.priceCanvas; s.priceMasterpiece = $("devPriceMasterpiece").value || s.priceMasterpiece;
+      let v = $("devVideo").value || s.heroVideo; if(v) v = cacheBust(v);
+      s.heroVideo = v; s.videoEnabled = $("devVideoToggle").value === "on";
+      saveState(s); applyState(s);
+      alert("General settings saved.");
+    });
+
+    // Image validators & save
+    document.querySelectorAll(".imgTest").forEach(btn=> btn.addEventListener("click", ()=>{
+      const id=btn.dataset.target; const url=$(id).value;
+      if(!url) return alert("Paste an image URL to validate.");
+      const img=new Image();
+      img.onload=()=> alert("✅ Image loads fine."); img.onerror=()=> alert("❌ Could not load this image URL.");
+      img.src = url + (url.includes("?") ? "&":"?") + "v=" + Date.now();
+    }));
+    $("saveImages").addEventListener("click", ()=>{
+      const s=getState();
+      s.heroImg = $("imgHero").value || s.heroImg; s.images.about = $("imgAbout").value || s.images.about;
+      ["1","2","3","4"].forEach(n=> s.images["mock"+n] = $("imgMock"+n).value || s.images["mock"+n]);
+      s.images.showEcom = $("imgShowEcom").value || s.images.showEcom;
+      s.images.showPort = $("imgShowPort").value || s.images.showPort;
+      s.images.showLand = $("imgShowLand").value || s.images.showLand;
+      s.images.showSaaS = $("imgShowSaaS").value || s.images.showSaaS;
+      ["1","2","3","4","5","6"].forEach(n=> s.images["proj"+n] = $("imgProj"+n).value || s.images["proj"+n]);
+      saveState(s); applyState(s); alert("Images updated.");
+    });
+    $("resetImages").addEventListener("click", ()=>{ const s=getState(); s.heroImg=DEFAULTS.heroImg; s.images=JSON.parse(JSON.stringify(DEFAULTS.images)); saveState(s); applyState(s); loadDevForms(); });
+
+    // Export / Import JSON
+    $("exportSettings").addEventListener("click", ()=>{
+      const data = JSON.stringify(getState(), null, 2);
+      const blob = new Blob([data], {type:"application/json"});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = url; a.download = "webflix-settings.json"; a.click();
+      URL.revokeObjectURL(url);
+    });
+    $("importSettings").addEventListener("change", (e)=>{
+      const file=e.target.files[0]; if(!file) return;
+      const reader=new FileReader();
+      reader.onload=(evt)=>{
+        try{ const obj=JSON.parse(evt.target.result); localStorage.setItem("webflixState", JSON.stringify(obj)); applyState(obj); loadDevForms(); alert("Settings imported."); }
+        catch(err){ alert("Invalid JSON."); }
+      };
+      reader.readAsText(file);
+    });
+
+    // #dev shortcut
+    if(location.hash==="#dev"){ openDevGate(); }
+
+    // Carousel interaction
+    (function carousel(){
+      const track=$("workTrack"); if(!track) return;
+      const prev=$("workPrev"), next=$("workNext"); const items=track.children; let index=0;
+      function update(){ const w=items[0].getBoundingClientRect().width + 16; track.style.transform = `translateX(${-index * w}px)`; }
+      function clamp(){ const max=items.length - (window.innerWidth >= 768 ? 3 : 1); if(index<0) index=0; if(index>max) index=max; }
+      next.addEventListener("click", ()=>{ index++; clamp(); update(); });
+      prev.addEventListener("click", ()=>{ index--; clamp(); update(); });
+      let startX=0, drag=0, dragging=false;
+      track.addEventListener("pointerdown", e=>{ dragging=true; startX=e.clientX; track.setPointerCapture(e.pointerId); });
+      track.addEventListener("pointermove", e=>{ if(!dragging) return; drag=e.clientX-startX; const w=items[0].getBoundingClientRect().width+16; track.style.transform=`translateX(calc(${-index*w}px + ${drag}px))`; });
+      track.addEventListener("pointerup", ()=>{ dragging=false; if(Math.abs(drag)>60){ index += drag<0 ? 1 : -1; } clamp(); update(); drag=0; });
+      setInterval(()=>{ index++; clamp(); update(); }, 4500);
+      window.addEventListener("resize", update); update();
+    })();
+
+    // Package selector
+    (function packageSelector(){
+      const pills=document.querySelectorAll(".tier-pill");
+      const title=$("previewTitle"), desc=$("previewDesc"), price=$("previewPrice"), list=$("previewList"), img=$("previewImg");
+      const tiers={
+        Pixel:{desc:"Clean, single‑page starter to get you live fast.", price:()=>getState().pricePixel||"149", list:["1 page design","Responsive layout","Contact form","Basic SEO","1 revision"], img:"https://picsum.photos/seed/pixel/1200/800"},
+        Canvas:{desc:"Multi‑page site with custom styling and features.", price:()=>getState().priceCanvas||"399", list:["Up to 5 pages","Custom components","Speed optimisation","Basic analytics","2 revisions"], img:"https://picsum.photos/seed/canvas/1200/800"},
+        Masterpiece:{desc:"Premium build with advanced features and polish.", price:()=>getState().priceMasterpiece||"799", list:["Up to 10 pages","E‑commerce ready","Advanced SEO setup","Performance audit","30‑day support"], img:"https://picsum.photos/seed/masterpiece/1200/800"}
+      };
+      function select(name){
+        pills.forEach(p=> p.classList.toggle("btn-primary", p.dataset.tier===name));
+        pills.forEach(p=> p.classList.toggle("btn-ghost", p.dataset.tier!==name));
+        title.textContent=name; const t=tiers[name];
+        desc.textContent=t.desc; price.textContent=typeof t.price==="function" ? t.price() : t.price; list.innerHTML=t.list.map(li=>`<li>${li}</li>`).join(""); img.src=t.img;
+      }
+      pills.forEach(p=> p.addEventListener("click", ()=> select(p.dataset.tier))); select("Masterpiece");
+    })();
+
+    // Apply Fiverr link if set
+    (function applyFiverrLink(){
+      const s=getState();
+      if(s.advanced.fiverrLink){
+        document.querySelectorAll('a[href="#contact"]').forEach(a=> a.setAttribute("href", s.advanced.fiverrLink));
+        document.querySelectorAll('#contact form button[type="submit"]').forEach(btn=> btn.addEventListener("click", ()=> window.location.href = s.advanced.fiverrLink));
+      }
+    })();
+  </script>
+</body>
+</html>
